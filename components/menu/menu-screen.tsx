@@ -15,11 +15,10 @@ import { MenuHeader } from "./menu-header";
 import { MenuPanel } from "./menu-panel";
 import { NavSheet } from "./nav-sheet";
 import { OceanBackground } from "./ocean-background";
-import { ReviewSheet } from "./review-sheet";
 import { SearchBar } from "./search-bar";
 import { WifiSheet } from "./wifi-sheet";
 
-type SheetId = "nav" | "dish" | "wifi" | "review";
+type SheetId = "nav" | "dish" | "wifi";
 
 const PANEL_ID = "menu-panel";
 
@@ -36,7 +35,6 @@ export function MenuScreen({ menu, restaurant }: MenuScreenProps) {
   const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
 
   const waiter = useServiceRequest("waiter");
-  const bill = useServiceRequest("bill");
 
   const sentinelRef = useRef<HTMLDivElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
@@ -133,12 +131,7 @@ export function MenuScreen({ menu, restaurant }: MenuScreenProps) {
           </main>
         </div>
 
-        <ActionBar
-          waiter={waiter}
-          bill={bill}
-          onOpenReview={() => setOpenSheet("review")}
-          onOpenWifi={() => setOpenSheet("wifi")}
-        />
+        <ActionBar restaurant={restaurant} onOpenWifi={() => setOpenSheet("wifi")} />
       </div>
 
       <NavSheet
@@ -152,7 +145,6 @@ export function MenuScreen({ menu, restaurant }: MenuScreenProps) {
       />
       <DishSheet {...sheetState("dish")} dish={selectedDish} waiter={waiter} />
       <WifiSheet {...sheetState("wifi")} wifi={restaurant.wifi} />
-      <ReviewSheet {...sheetState("review")} reviewUrl={restaurant.reviewUrl} />
     </MotionConfig>
   );
 }

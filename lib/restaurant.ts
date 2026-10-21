@@ -6,6 +6,8 @@ export interface RestaurantInfo {
   phone: string;
   hours: { days: string; time: string }[];
   reviewUrl: string;
+  facebookUrl: string;
+  whatsappUrl: string;
   wifi: { network: string; password: string };
 }
 
@@ -20,6 +22,8 @@ export const restaurant: RestaurantInfo = {
     { days: "Lunes a jueves", time: "11:00 – 19:00" },
     { days: "Viernes a domingo", time: "10:00 – 21:00" },
   ],
-  reviewUrl: "https://search.google.com/local/writereview?placeid=TU_PLACE_ID",
+  reviewUrl: "https://search.google.com/local/writereview?placeid=ChIJy3fQmBrlxIURQdSIH66gGJU",
+  facebookUrl: "https://www.facebook.com/TU_PAGINA",
+  whatsappUrl: "https://wa.me/525512345678",
   wifi: { network: "Chucumites_Clientes", password: "mariscos2026" },
 };
