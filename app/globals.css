@@ -1,26 +1,171 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Los Chucumites — design tokens
+ * Primitive palette → semantic shadcn tokens → component utilities.
+ */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  --color-ocean-950: #051231;
+  --color-ocean-900: #0a1d48;
+  --color-ocean-800: #0e2a66;
+  --color-ocean-700: #133f94;
+  --color-ocean-600: #1858c4;
+  --color-ocean-500: #1d74df;
+  --color-ocean-400: #2b98ec;
+  --color-ocean-300: #59c3f5;
+  --color-ocean-200: #a6e2fb;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-zest: #d8f53c;
+  --color-zest-soft: #ecfb9c;
+  --color-chile: #e8322b;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-wave-drift: wave-drift 26s linear infinite;
+  --animate-wave-drift-slow: wave-drift 42s linear infinite reverse;
+  --animate-caustics: caustics 14s ease-in-out infinite alternate;
+
+  @keyframes wave-drift {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  @keyframes caustics {
+    from {
+      transform: translate3d(-3%, -2%, 0) scale(1);
+      opacity: 0.55;
+    }
+    to {
+      transform: translate3d(3%, 2%, 0) scale(1.08);
+      opacity: 0.85;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --font-sans: var(--font-nunito);
+  --font-display: var(--font-bangers);
+  --font-brand: var(--font-lilita);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+}
+
+/* The menu ships a single, brand-driven dark theme. */
+:root {
+  color-scheme: dark;
+  --radius: 0.875rem;
+  --background: var(--color-ocean-950);
+  --foreground: #ffffff;
+  --card: var(--color-ocean-900);
+  --card-foreground: #ffffff;
+  --popover: var(--color-ocean-900);
+  --popover-foreground: #ffffff;
+  --primary: var(--color-zest);
+  --primary-foreground: var(--color-ocean-950);
+  --secondary: var(--color-ocean-800);
+  --secondary-foreground: #ffffff;
+  --muted: var(--color-ocean-800);
+  --muted-foreground: rgb(255 255 255 / 0.72);
+  --accent: var(--color-ocean-700);
+  --accent-foreground: #ffffff;
+  --destructive: var(--color-chile);
+  --border: rgb(255 255 255 / 0.12);
+  --input: rgb(255 255 255 / 0.16);
+  --ring: var(--color-zest);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground;
+    /* Only visible beside the menu column on wide screens. */
+    background-image:
+      radial-gradient(60% 50% at 50% 0%, rgb(29 116 223 / 0.25), transparent 70%),
+      radial-gradient(50% 40% at 50% 100%, rgb(24 88 196 / 0.2), transparent 70%);
+    background-attachment: fixed;
+  }
+}
+
+/* Hides the scrollbar while keeping the element scrollable. */
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Thick outline behind the glyphs, used by the wordmark. */
+@utility text-outline {
+  -webkit-text-stroke: 0.14em var(--color-ocean-950);
+  paint-order: stroke fill;
+}
+
+/* Fades the horizontal edges of a scroller to hint at more content. */
+@utility mask-fade-x {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 1rem,
+    #000 calc(100% - 1.5rem),
+    transparent
+  );
+}
+
+/*
+ * Painterly water surface: layered gradients plus an feTurbulence texture
+ * stretched horizontally to read as brush-stroked waves.
+ */
+@utility ocean-surface {
+  background-color: var(--color-ocean-600);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='480'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.004 0.045' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.75 0 0 0 0 0.93 0 0 0 0 1 0 0 0 1.6 -0.75'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 60% at 15% 35%, rgb(89 195 245 / 0.45), transparent 60%),
+    radial-gradient(90% 50% at 90% 70%, rgb(43 152 236 / 0.5), transparent 65%),
+    linear-gradient(
+      180deg,
+      var(--color-ocean-800) 0%,
+      var(--color-ocean-600) 22%,
+      var(--color-ocean-500) 55%,
+      var(--color-ocean-600) 80%,
+      var(--color-ocean-700) 100%
+    );
+  background-size: 480px 480px, auto, auto, auto;
 }
